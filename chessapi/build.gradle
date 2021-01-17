@@ -1,0 +1,32 @@
+apply plugin: 'war'
+apply plugin: 'org.springframework.boot'
+
+war {
+    baseName = "chessapi"
+
+    manifest {
+        attributes "Main-Class": "chessapi.ChessApi"
+    }
+}
+
+springBoot {
+    mainClassName = "chessapi.ChessApi"
+}
+
+dependencies {
+
+    // https://mvnrepository.com/artifact/com.squareup.okhttp/okhttp
+    compile group: 'com.squareup.okhttp', name: 'okhttp', version: '2.7.5'
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.3.2.RELEASE'
+
+    // https://mvnrepository.com/artifact/junit/junit
+    testCompile group: 'junit', name: 'junit', version: '4.13.1'
+
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/mockwebserver
+    testCompile group: 'com.squareup.okhttp3', name: 'mockwebserver', version: '3.2.0'
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.2.RELEASE'
+}
