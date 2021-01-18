@@ -34,32 +34,77 @@ public abstract class Piece {
 	public List<Integer[]> getValidHorizontalVerticalMoves(Integer[] fromCoord, Board board) {
 		List<Integer[]> validMoves = new ArrayList<Integer[]>();
 
-		// TODO consider collisions with other pieces
+		// the piece which is being moved
+		Piece piece = board.getGridSquare(fromCoord[0], fromCoord[1]);
 
 		// up
 		Integer[] coord = new Integer[] { fromCoord[0] - 1, fromCoord[1] };
-		while (coord[0] >= 0) {
+		while (coord[0] >= 0) { // boundary check
+			// the piece on the square which is being moved to
+			Piece coordPiece = board.getGridSquare(coord[0], coord[1]);
+
+			// collision check
+			if (coordPiece != null) {
+				if (!coordPiece.getColor().equals(piece.getColor())) {
+					validMoves.add(new Integer[] { coord[0], coord[1] });
+				}
+				break;
+			}
+
 			validMoves.add(new Integer[] { coord[0], coord[1] });
 			coord[0] = coord[0] - 1;
 		}
 
 		// down
 		coord = new Integer[] { fromCoord[0] + 1, fromCoord[1] };
-		while (coord[0] <= 7) {
+		while (coord[0] <= 7) { // boundary check
+			// the piece on the square which is being moved to
+			Piece coordPiece = board.getGridSquare(coord[0], coord[1]);
+
+			// collision check
+			if (coordPiece != null) {
+				if (!coordPiece.getColor().equals(piece.getColor())) {
+					validMoves.add(new Integer[] { coord[0], coord[1] });
+				}
+				break;
+			}
+
 			validMoves.add(new Integer[] { coord[0], coord[1] });
 			coord[0] = coord[0] + 1;
 		}
 
 		// left
 		coord = new Integer[] { fromCoord[0], fromCoord[1] - 1 };
-		while (coord[1] >= 0) {
+		while (coord[1] >= 0) { // boundary check
+			// the piece on the square which is being moved to
+			Piece coordPiece = board.getGridSquare(coord[0], coord[1]);
+
+			// collision check
+			if (coordPiece != null) {
+				if (!coordPiece.getColor().equals(piece.getColor())) {
+					validMoves.add(new Integer[] { coord[0], coord[1] });
+				}
+				break;
+			}
+
 			validMoves.add(new Integer[] { coord[0], coord[1] });
 			coord[1] = coord[1] - 1;
 		}
 
 		// right
 		coord = new Integer[] { fromCoord[0], fromCoord[1] + 1 };
-		while (coord[1] <= 7) {
+		while (coord[1] <= 7) { // boundary check
+			// the piece on the square which is being moved to
+			Piece coordPiece = board.getGridSquare(coord[0], coord[1]);
+
+			// collision check
+			if (coordPiece != null) {
+				if (!coordPiece.getColor().equals(piece.getColor())) {
+					validMoves.add(new Integer[] { coord[0], coord[1] });
+				}
+				break;
+			}
+
 			validMoves.add(new Integer[] { coord[0], coord[1] });
 			coord[1] = coord[1] + 1;
 		}
@@ -70,11 +115,23 @@ public abstract class Piece {
 	public List<Integer[]> getValidDiagonalMoves(Integer[] fromCoord, Board board) {
 		List<Integer[]> validMoves = new ArrayList<Integer[]>();
 
-		// TODO consider collisions with other pieces
+		// the piece which is being moved
+		Piece piece = board.getGridSquare(fromCoord[0], fromCoord[1]);
 
 		// up-left
 		Integer[] coord = { fromCoord[0] - 1, fromCoord[1] - 1 };
-		while (coord[0] >= 0 && coord[1] >= 0) {
+		while (coord[0] >= 0 && coord[1] >= 0) { // boundary check
+			// the piece on the square which is being moved to
+			Piece coordPiece = board.getGridSquare(coord[0], coord[1]);
+
+			// collision check
+			if (coordPiece != null) {
+				if (!coordPiece.getColor().equals(piece.getColor())) {
+					validMoves.add(new Integer[] { coord[0], coord[1] });
+				}
+				break;
+			}
+
 			validMoves.add(new Integer[] { coord[0], coord[1] });
 			coord[0] = coord[0] - 1;
 			coord[1] = coord[1] - 1;
@@ -82,7 +139,18 @@ public abstract class Piece {
 
 		// up-right
 		coord = new Integer[] { fromCoord[0] - 1, fromCoord[1] + 1 };
-		while (coord[0] >= 0 && coord[1] <= 7) {
+		while (coord[0] >= 0 && coord[1] <= 7) { // boundary check
+			// the piece on the square which is being moved to
+			Piece coordPiece = board.getGridSquare(coord[0], coord[1]);
+
+			// collision check
+			if (coordPiece != null) {
+				if (!coordPiece.getColor().equals(piece.getColor())) {
+					validMoves.add(new Integer[] { coord[0], coord[1] });
+				}
+				break;
+			}
+
 			validMoves.add(new Integer[] { coord[0], coord[1] });
 			coord[0] = coord[0] - 1;
 			coord[1] = coord[1] + 1;
@@ -90,7 +158,18 @@ public abstract class Piece {
 
 		// down-left
 		coord = new Integer[] { fromCoord[0] + 1, fromCoord[1] - 1 };
-		while (coord[0] <= 7 && coord[1] >= 0) {
+		while (coord[0] <= 7 && coord[1] >= 0) { // boundary check
+			// the piece on the square which is being moved to
+			Piece coordPiece = board.getGridSquare(coord[0], coord[1]);
+
+			// collision check
+			if (coordPiece != null) {
+				if (!coordPiece.getColor().equals(piece.getColor())) {
+					validMoves.add(new Integer[] { coord[0], coord[1] });
+				}
+				break;
+			}
+
 			validMoves.add(new Integer[] { coord[0], coord[1] });
 			coord[0] = coord[0] + 1;
 			coord[1] = coord[1] - 1;
@@ -98,7 +177,18 @@ public abstract class Piece {
 
 		// down-right
 		coord = new Integer[] { fromCoord[0] + 1, fromCoord[1] + 1 };
-		while (coord[0] <= 7 && coord[1] >= 7) {
+		while (coord[0] <= 7 && coord[1] <= 7) { // boundary check
+			// the piece on the square which is being moved to
+			Piece coordPiece = board.getGridSquare(coord[0], coord[1]);
+
+			// collision check
+			if (coordPiece != null) {
+				if (!coordPiece.getColor().equals(piece.getColor())) {
+					validMoves.add(new Integer[] { coord[0], coord[1] });
+				}
+				break;
+			}
+
 			validMoves.add(new Integer[] { coord[0], coord[1] });
 			coord[0] = coord[0] + 1;
 			coord[1] = coord[1] + 1;
@@ -106,6 +196,8 @@ public abstract class Piece {
 
 		return validMoves;
 	}
+
+	// TODO address checks for the king (this limits what moves are possible)
 
 	public abstract List<Integer[]> getValidMoves(Integer[] fromCoord, Board board);
 

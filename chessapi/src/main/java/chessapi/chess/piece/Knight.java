@@ -20,16 +20,13 @@ public class Knight extends Piece {
 	public List<Integer[]> getValidMoves(Integer[] fromCoord, Board board) {
 		List<Integer[]> validMoves = new ArrayList<Integer[]>();
 
-		Integer[][] potentialMoves = { { fromCoord[0] - 2, fromCoord[1] - 1 }, // up 2,
-																				// left 1
-				{ fromCoord[0] - 2, fromCoord[1] + 1 }, // up 2, right 1
-				{ fromCoord[0] + 2, fromCoord[1] - 1 }, // down 2, left 1
-				{ fromCoord[0] + 2, fromCoord[1] + 1 }, // down 2, right 1
-				{ fromCoord[0] - 1, fromCoord[1] - 2 }, // left 2, up 1
-				{ fromCoord[0] + 1, fromCoord[1] - 2 }, // left 2, down 1
-				{ fromCoord[0] - 1, fromCoord[1] + 2 }, // right 2, up 1
-				{ fromCoord[0] + 1, fromCoord[1] + 2 } // right 2, down 1
-		};
+		// the piece which is being moved
+		Piece piece = board.getGridSquare(fromCoord[0], fromCoord[1]);
+
+		Integer[][] potentialMoves = { { fromCoord[0] - 2, fromCoord[1] - 1 }, { fromCoord[0] - 2, fromCoord[1] + 1 },
+				{ fromCoord[0] + 2, fromCoord[1] - 1 }, { fromCoord[0] + 2, fromCoord[1] + 1 },
+				{ fromCoord[0] - 1, fromCoord[1] - 2 }, { fromCoord[0] + 1, fromCoord[1] - 2 },
+				{ fromCoord[0] - 1, fromCoord[1] + 2 }, { fromCoord[0] + 1, fromCoord[1] + 2 } };
 
 		for (Integer[] move : potentialMoves) {
 			// boundary check
@@ -37,7 +34,13 @@ public class Knight extends Piece {
 				continue;
 			}
 
-			// TODO collision check
+			// the piece on the square which is being moved to
+			Piece movePiece = board.getGridSquare(move[0], move[1]);
+
+			// collision check
+			if (movePiece != null && movePiece.getColor().equals(piece.getColor())) {
+				continue;
+			}
 
 			validMoves.add(new Integer[] { move[0], move[1] });
 		}

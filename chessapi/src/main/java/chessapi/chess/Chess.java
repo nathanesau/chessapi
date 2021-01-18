@@ -58,6 +58,8 @@ public class Chess {
 
 		Board board = new Board();
 		board.setGrid(initialGrid);
+		board.setKingMoved("White", false);
+		board.setKingMoved("Black", false);
 
 		return board;
 	}
@@ -100,22 +102,53 @@ public class Chess {
 		}
 
 		if (possiblePieces.size() > 1) {
-			// this could be do to doubled pawn structure
-			// if so, move the closest pawn
-			if (piece.getType() != "Pawn") {
-				// TODO handle case where ambiguous Rook, etc. was actually specified in
-				// PGN
-				throw new InvalidMoveException("Ambiguous move (Move = " + move.toString() + ")");
+			// double pawn structure case
+			if (piece.getType() == "Pawn") {
+				for (Integer[] possiblePiece : possiblePieces) {
+					// get piece which is one row away
+					if (java.lang.Math.abs(possiblePiece[0] - toCoord[0]) == 1) {
+						return possiblePiece;
+					}
+				}
 			}
 
+			// default case
+			Character rowCol = move.getRowCol();
 			for (Integer[] possiblePiece : possiblePieces) {
-				// get piece which is one row away
-				if (java.lang.Math.abs(possiblePiece[0] - toCoord[0]) == 1) {
+				String from = null;
+				switch (possiblePiece[1]) {
+				case 0:
+					from = "a" + possiblePiece[0];
+					break;
+				case 1:
+					from = "b" + possiblePiece[0];
+					break;
+				case 2:
+					from = "c" + possiblePiece[0];
+					break;
+				case 3:
+					from = "d" + possiblePiece[0];
+					break;
+				case 4:
+					from = "e" + possiblePiece[0];
+					break;
+				case 5:
+					from = "f" + possiblePiece[0];
+					break;
+				case 6:
+					from = "g" + possiblePiece[0];
+					break;
+				case 7:
+					from = "h" + possiblePiece[0];
+				default:
+					break;
+				}
+				if (from.charAt(0) == rowCol.charValue() || from.charAt(1) == rowCol.charValue()) {
 					return possiblePiece;
 				}
 			}
 
-			throw new InvalidMoveException("No piece can make this move (Move = " + move.toString() + ")");
+			throw new InvalidMoveException("Ambiguous move (Move = " + move.toString() + ")");
 		}
 		else if (possiblePieces.isEmpty()) {
 			throw new InvalidMoveException("No piece can make this move (Move = " + move.toString() + ")");
@@ -153,7 +186,6 @@ public class Chess {
 		}
 		else if (move.getType().equals("QCastle")) {
 			if (move.getPiece().getColor().equals("White")) {
-				// TODO make sure no pieces in between rook and king
 				if (!(board.getGridSquare(7, 0).getColor().equals("White")
 						&& board.getGridSquare(7, 0).getType().equals("Rook"))) {
 					throw new InvalidMoveException("Invalid queen side castle (Move = " + move.toString() + ")");
@@ -170,7 +202,6 @@ public class Chess {
 				board.setGridSquare(7, 0, null);
 			}
 			else { // "Black"
-					// TODO make sure no pieces in between rook and king
 				if (!(board.getGridSquare(0, 0).getColor().equals("Black")
 						&& board.getGridSquare(0, 0).getType().equals("Rook"))) {
 					throw new InvalidMoveException("Invalid queen side castle (Move = " + move.toString() + ")");
@@ -189,7 +220,6 @@ public class Chess {
 		}
 		else if (move.getType().equals("KCastle")) {
 			if (move.getPiece().getColor().equals("White")) {
-				// TODO make sure no pieces in between rook and king
 				if (!(board.getGridSquare(7, 7).getColor().equals("White")
 						&& board.getGridSquare(7, 7).getType().equals("Rook"))) {
 					throw new InvalidMoveException("Invalid king side castle (Move = " + move.toString() + ")");
@@ -206,7 +236,6 @@ public class Chess {
 				board.setGridSquare(7, 7, null);
 			}
 			else { // "Black"
-					// TODO make sure no pieces in between rook and king
 				if (!(board.getGridSquare(0, 7).getColor().equals("Black")
 						&& board.getGridSquare(0, 7).getType().equals("Rook"))) {
 					throw new InvalidMoveException("Invalid king side castle (Move = " + move.toString() + ")");
@@ -227,6 +256,11 @@ public class Chess {
 			board.setGridSquare(toCoord[0], toCoord[1],
 					factory.getPiece(move.getPiece().getColor(), move.getPiece().getType()));
 			board.setGridSquare(fromCoord[0], fromCoord[1], null);
+		}
+
+		// update metadata
+		if (board.getGridSquare(toCoord[0], toCoord[1]).getType().equals("King")) {
+			board.setKingMoved(board.getGridSquare(toCoord[0], toCoord[1]).getColor(), true);
 		}
 	}
 

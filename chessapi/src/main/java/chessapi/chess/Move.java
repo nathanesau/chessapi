@@ -6,25 +6,38 @@ public class Move {
 
 	Piece piece;
 
+	// rowCol is used to uniquely identify a piece in ambiguous situations
+	// will be 'a', 'b', ... 'h' or '1', '2', ..., '8' or null
+	Character rowCol;
+
 	String to;
 
 	String type;
 
 	Boolean check;
 
-	public Move(Piece piece, String to, String type, Boolean check) {
+	public Move(Piece piece, Character rowCol, String to, String type, Boolean check) {
 		this.piece = piece;
+		this.rowCol = rowCol;
 		this.to = to;
 		this.type = type;
 		this.check = check;
 	}
 
 	/**
-	 * Give the piece which is being moved.
+	 * Get the piece which is being moved.
 	 * @return the piece which is performing the move.
 	 */
 	public Piece getPiece() {
 		return piece;
+	}
+
+	/**
+	 * Get the rowCol of the piece which is being moved.
+	 * @return 'a', 'b', ... 'h' or '1', '2', ..., '8' or null.
+	 */
+	public Character getRowCol() {
+		return rowCol;
 	}
 
 	/**

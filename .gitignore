@@ -1,6 +1,6 @@
 # build files
-.gradle
 *.settings
+*.gradle
 *.classpath
 *.class
 build
