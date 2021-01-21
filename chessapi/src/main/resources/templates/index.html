@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Chess API</title>
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" th:href="@{/css/chessboard-1.0.0.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/base.css}" />
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/chessboard-1.0.0.min.js}"
+    ></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/">Chess API</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="/"
+                >Home <span class="sr-only">(current)</span></a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://github.com/nathanesau/chessapi"
+                >GitHub</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <p>
+        Interactive Chess Board using
+        <a href="https://chessboardjs.com/">chessboardjs.com</a>.
+      </p>
+      <table>
+        <tr>
+          <td>
+            <div id="board1" style="width: 400px"></div>
+            <br />
+            <div>
+              <button id="startBtn">Start Position</button>
+              <button id="clearBtn">Clear Board</button>
+            </div>
+          </td>
+          <td>
+            <ul>
+              <li>
+                onDragStart Response:
+                <code><span id="onDragStartResponse"></span></code>
+              </li>
+              <li>
+                onDrop Response: <code><span id="onDropResponse"></span></code>
+              </li>
+              <li>
+                onSnapEnd Response:
+                <code><span id="onSpanEndResponse"></span></code>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <script>
+      function onDragStart(source, piece, position, orientation) {
+        $.ajax({
+          url: "/onDragStart",
+          type: "get",
+          data: {
+            source: source,
+            piece: piece,
+            position: JSON.stringify(position),
+            orientation: orientation,
+          },
+        }).done(function (response) {
+          $("#onDragStartResponse").text(response);
+        });
+      }
+
+      function onDrop(source, target) {
+        $.ajax({
+          url: "/onDrop",
+          type: "get",
+          data: { source: source, target: target },
+        }).done(function (response) {
+          $("#onDropResponse").text(response);
+        });
+      }
+
+      // update the board position after the piece snap
+      // for castling, en passant, pawn promotion
+      function onSnapEnd() {
+        $.ajax("/onSnapEnd").done(function (response) {
+          $("#onSpanEndResponse").text(response);
+        });
+      }
+
+      // can use position: position here
+      // https://chessboardjs.com/examples#5000
+      var board = Chessboard("board1", {
+        position: "start",
+        draggable: true,
+        sparePieces: false,
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onSnapEnd: onSnapEnd,
+      });
+      $("#startBtn").on("click", board.start);
+      $("#clearBtn").on("click", board.clear);
+    </script>
+  </body>
+</html>
