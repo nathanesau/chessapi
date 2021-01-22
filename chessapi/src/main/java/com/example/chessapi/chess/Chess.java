@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.chessapi.chess.exceptions.InvalidMoveException;
+import com.example.chessapi.chess.exceptions.InvalidPositionException;
 import com.example.chessapi.chess.parsers.PgnParser;
+import com.example.chessapi.chess.parsers.PositionParser;
 import com.example.chessapi.chess.piece.Piece;
 import com.example.chessapi.chess.piece.PieceFactory;
 
@@ -262,6 +264,19 @@ public class Chess {
 		if (board.getGridSquare(toCoord[0], toCoord[1]).getType().equals("King")) {
 			board.setKingMoved(board.getGridSquare(toCoord[0], toCoord[1]).getColor(), true);
 		}
+	}
+
+	/**
+	 * Load a chess game using position string.
+	 * @param position The current position.
+	 * @return The board.
+	 */
+	public static Board loadPosition(String position) throws InvalidPositionException {
+
+		PositionParser positionParser = new PositionParser();
+		Board board = positionParser.parse(position);
+
+		return board;
 	}
 
 	/**
