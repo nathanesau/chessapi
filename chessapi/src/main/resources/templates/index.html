@@ -25,9 +25,13 @@
       integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
       crossorigin="anonymous"
     ></script>
-    <script
+    <!--<script
       type="text/javascript"
       th:src="@{/js/chessboard-1.0.0.min.js}"
+    ></script>-->
+    <script
+      type="text/javascript"
+      th:src="@{/js/chessboard-1.0.0.js}"
     ></script>
   </head>
   <body>
@@ -72,11 +76,11 @@
             <div id="board1" style="width: 400px"></div>
             <br />
             <div>
-              <button id="startBtn">Start Position</button>
-              <button id="clearBtn">Clear Board</button>
+              <button id="startBtn">New Game</button>
             </div>
           </td>
           <td>
+            <p><b>Event Handlers</b></p>
             <ul>
               <li>
                 onDragStart Response:
@@ -85,61 +89,88 @@
               <li>
                 onDrop Response: <code><span id="onDropResponse"></span></code>
               </li>
+            </ul>
+            <p><b>Status</b></p>
+            <ul>
               <li>
-                onSnapEnd Response:
-                <code><span id="onSpanEndResponse"></span></code>
+                <div id="status"></div>
               </li>
             </ul>
+            <p><b>PGN</b></p>
+            <ul>
+              <li>
+                <div id="pgn"></div>
+              </li>
+            </ul>
+            </b>
           </td>
         </tr>
       </table>
     </div>
     <script>
-      function onDragStart(source, piece, position, orientation) {
-        $.ajax({
+
+      function onStart() {
+        turn = "white";
+        $("#pgn").text("");
+        $("#status").text(`${turn} to move`);
+        board.start();
+      }
+
+      // check whether current piece can be moved.
+      async function onDragStart(source, piece, position, orientation) {
+        // NOTE: `orientation` doesn't get updated
+        // we should pass `turn` to AjaxController instead
+        return $.ajax({
           url: "/onDragStart",
           type: "get",
           data: {
             source: source,
             piece: piece,
             position: JSON.stringify(position),
-            orientation: orientation,
-          },
+            orientation: turn,
+          }
         }).done(function (response) {
           $("#onDragStartResponse").text(response);
         });
       }
 
-      function onDrop(source, target) {
-        $.ajax({
+      // check whether current move is valid.
+      // if move is valid, update pgn
+      // if move is valid, update position
+      async function onDrop(source, target) {
+        return $.ajax({
           url: "/onDrop",
           type: "get",
-          data: { source: source, target: target },
+          data: {
+            source: source,
+            target: target,
+            position: JSON.stringify(board.position()),
+            pgn: $("#pgn").text()
+          }
         }).done(function (response) {
-          $("#onDropResponse").text(response);
+          $("#onDropResponse").text(response.action);
+          if (response.action == "drop") {
+            turn = (turn === 'white') ? 'black' : 'white';
+            $("#pgn").text(response.pgn);
+            $("#status").text(`${turn} to move`);
+            board.position(response.position);
+          }
         });
       }
 
-      // update the board position after the piece snap
-      // for castling, en passant, pawn promotion
-      function onSnapEnd() {
-        $.ajax("/onSnapEnd").done(function (response) {
-          $("#onSpanEndResponse").text(response);
-        });
-      }
-
-      // can use position: position here
-      // https://chessboardjs.com/examples#5000
+      // "white" or "black"
+      var turn = "white";
+    
       var board = Chessboard("board1", {
         position: "start",
         draggable: true,
         sparePieces: false,
         onDragStart: onDragStart,
-        onDrop: onDrop,
-        onSnapEnd: onSnapEnd,
+        onDrop: onDrop
       });
-      $("#startBtn").on("click", board.start);
-      $("#clearBtn").on("click", board.clear);
+      $("#startBtn").on("click", onStart);
+      $("#pgn").text("");
+      $("#status").text("white to move");
     </script>
   </body>
 </html>

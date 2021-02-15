@@ -16,14 +16,10 @@ docker build -t chessapi:image .
 # run docker image
 docker run --name chessapi --restart always -p 8080:8080 -d chessapi:image
 
-# push to docker hub
-docker tag chessapi:image nathanesau/chessapi:chessapi
-docker push nathanesau/chessapi:chessapi
-
-# heroku
-"C:/Program Files/heroku/bin/heroku.cmd" container:push web -a nathanesau-chessapi
-"C:/Program Files/heroku/bin/heroku.cmd" container:release web -a nathanesau-chessapi
-"C:/Program Files/heroku/bin/heroku.cmd" logs --tail -a nathanesau-chessapi
+# push to github container registry
+# run using git bash
+docker tag chessapi:image docker.pkg.github.com/nathanesau/chessapi/chessapi:1.0
+docker push docker.pkg.github.com/nathanesau/chessapi/chessapi:1.0
 ```
 
 ## Interface Tests

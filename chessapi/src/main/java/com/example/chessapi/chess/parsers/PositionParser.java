@@ -67,7 +67,7 @@ public class PositionParser {
      */
     public Board parse(String position) throws InvalidPositionException {
 
-        Board board = Chess.getInitialBoard();
+        Board board = Chess.getBlankBoard();
         
         Gson gson = new Gson();
         Type positionType = new TypeToken<Map<String, String>>() {}.getType();

@@ -1276,12 +1276,14 @@
       isDragging = false
     }
 
-    function beginDraggingPiece (source, piece, x, y) {
+    async function beginDraggingPiece (source, piece, x, y) {
       // run their custom onDragStart function
       // their custom onDragStart function can cancel drag start
-      if (isFunction(config.onDragStart) &&
-          config.onDragStart(source, piece, deepCopy(currentPosition), currentOrientation) === false) {
-        return
+      if (isFunction(config.onDragStart)) {
+          let result = await config.onDragStart(source, piece, deepCopy(currentPosition), currentOrientation);
+          if (result === false) {
+            return;
+          }
       }
 
       // set state
@@ -1355,7 +1357,7 @@
       draggedPieceLocation = location
     }
 
-    function stopDraggedPiece (location) {
+    async function stopDraggedPiece (location) {
       // determine what the action should be
       var action = 'drop'
       if (location === 'offboard' && config.dropOffBoard === 'snapback') {
@@ -1394,7 +1396,7 @@
 
         var oldPosition = deepCopy(currentPosition)
 
-        var result = config.onDrop(
+        var result = await config.onDrop(
           draggedPieceSource,
           location,
           draggedPiece,
@@ -1402,8 +1404,8 @@
           oldPosition,
           currentOrientation
         )
-        if (result === 'snapback' || result === 'trash') {
-          action = result
+        if (result.action === 'snapback' || result.action === 'trash') {
+          action = result.action
         }
       }
 

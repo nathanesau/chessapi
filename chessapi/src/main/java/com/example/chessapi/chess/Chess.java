@@ -12,6 +12,18 @@ import com.example.chessapi.chess.piece.PieceFactory;
 
 public class Chess {
 
+	public static Board getBlankBoard() {
+
+		Piece[][] initialGrid = new Piece[8][8];
+
+		Board board = new Board();
+		board.setGrid(initialGrid);
+		board.setKingMoved("White", false);
+		board.setKingMoved("Black", false);
+
+		return board;
+	}
+
 	/**
 	 * Get initial board before any moves have been made.
 	 * @return The initial board.
